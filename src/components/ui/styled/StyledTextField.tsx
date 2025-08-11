@@ -39,6 +39,11 @@ export const StyledTextField = styled(TextField)(({ error }) => ({
         color: '#697077',
         opacity: 1,
       },
+      
+      '&:placeholder-shown::placeholder': {
+        color: '#697077',
+        opacity: 1,
+      },
     },
   },
   

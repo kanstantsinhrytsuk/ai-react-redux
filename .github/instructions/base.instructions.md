@@ -19,6 +19,7 @@ description: 'File contains base instructions for frontend development, includin
 
 - Use Design System from the /src/styles/design-system.json (create configs in the theme or reuse existing ones)
 - Use reusable components to avoid duplication.
+- Use MUI as base for reusable components and styled-components for customizations by figma
 - Create utility functions for common tasks.
 - Use CSS modules or styled components to scope styles and avoid conflicts.
 - Implement a design system or component library for consistency.

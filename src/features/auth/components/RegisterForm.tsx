@@ -1,16 +1,29 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Box,
-  Button,
-  TextField,
-  Typography,
   Alert,
-  Paper,
   Link,
   CircularProgress,
 } from '@mui/material';
+import {
+  StyledRegistrationContainer,
+  StyledRegistrationCard,
+  StyledFormHeader,
+  StyledFormTitle,
+  StyledFormSubtitle,
+  StyledFieldsRow,
+  StyledSocialSection,
+  StyledSocialText,
+  StyledSocialButtonsDesktop,
+  StyledSocialButtonsMobile,
+  StyledFooterSection,
+  StyledFooterText,
+  StyledButton,
+  StyledSocialButton,
+} from '../../../components/ui/styled';
+import { InputField, Checkbox } from '../../../components/ui';
 import { useAuth } from '../hooks/useAuth';
 import { RegisterSchema, type RegisterRequest } from '../slice';
 
@@ -24,6 +37,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
   onSwitchToLogin,
 }) => {
   const { register: registerUser, isLoading, error } = useAuth();
+  const [acceptTerms, setAcceptTerms] = useState(false);
   
   const {
     register,
@@ -45,100 +59,148 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
   };
 
   return (
-    <Paper className="w-full max-w-md mx-auto p-8" elevation={0}>
-      <Box component="form" onSubmit={handleSubmit(onSubmit)}>
-        <Box className="text-center mb-6">
-          <Typography variant="h4" component="h2" className="font-bold mb-2">
-            Create your account
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            Or{' '}
-            <Link
-              component="button"
-              type="button"
-              onClick={onSwitchToLogin}
-              className="font-medium"
-            >
-              sign in to your existing account
-            </Link>
-          </Typography>
-        </Box>
+    <StyledRegistrationContainer>
+      <StyledRegistrationCard>
+        {/* Header Section */}
+        <StyledFormHeader>
+          <StyledFormTitle>Sign Up Free</StyledFormTitle>
+          <StyledFormSubtitle>
+            14 day free access to unlimited resources
+          </StyledFormSubtitle>
+        </StyledFormHeader>
 
+        {/* Error Alert */}
         {error && (
-          <Alert severity="error" className="mb-6">
+          <Alert severity="error" sx={{ mb: 3 }}>
             {error}
           </Alert>
         )}
 
-        <Box className="space-y-4 mb-6">
-          <TextField
-            {...register('name')}
-            id="name"
-            type="text"
-            label="Full name"
-            autoComplete="name"
-            placeholder="Enter your full name"
-            error={!!errors.name}
-            helperText={errors.name?.message}
-            required
-            fullWidth
-            variant="outlined"
-          />
+        {/* Registration Form */}
+        <Box component="form" onSubmit={handleSubmit(onSubmit)}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            {/* Name Fields Row */}
+            <StyledFieldsRow>
+              <Box sx={{ flex: 1 }}>
+                <InputField
+                  {...register('firstName')}
+                  label="First Name"
+                  placeholder="Placeholder"
+                  error={errors.firstName?.message}
+                />
+              </Box>
+              
+              <Box sx={{ flex: 1 }}>
+                <InputField
+                  {...register('lastName')}
+                  label="Last Name"
+                  placeholder="Placeholder"
+                  error={errors.lastName?.message}
+                />
+              </Box>
+            </StyledFieldsRow>
 
-          <TextField
-            {...register('email')}
-            id="email"
-            type="email"
-            label="Email address"
-            autoComplete="email"
-            placeholder="Enter your email"
-            error={!!errors.email}
-            helperText={errors.email?.message}
-            required
-            fullWidth
-            variant="outlined"
-          />
+            {/* Email Field */}
+            <InputField
+              {...register('email')}
+              type="email"
+              label="Email"
+              placeholder="Placeholder"
+              autoComplete="email"
+              error={errors.email?.message}
+            />
 
-          <TextField
-            {...register('password')}
-            id="password"
-            type="password"
-            label="Password"
-            autoComplete="new-password"
-            placeholder="Enter your password"
-            error={!!errors.password}
-            helperText={errors.password?.message}
-            required
-            fullWidth
-            variant="outlined"
-          />
+            {/* Password Field */}
+            <InputField
+              {...register('password')}
+              type="password"
+              label="Password"
+              placeholder="Placeholder"
+              autoComplete="new-password"
+              error={errors.password?.message}
+            />
 
-          <TextField
-            {...register('confirmPassword')}
-            id="confirmPassword"
-            type="password"
-            label="Confirm password"
-            autoComplete="new-password"
-            placeholder="Confirm your password"
-            error={!!errors.confirmPassword}
-            helperText={errors.confirmPassword?.message}
-            required
-            fullWidth
-            variant="outlined"
-          />
+            {/* Terms Checkbox */}
+            <Box sx={{ mt: 1 }}>
+              <Checkbox
+                {...register('acceptTerms')}
+                checked={acceptTerms}
+                onChange={(e) => setAcceptTerms(e.target.checked)}
+                label="I agree to the terms and conditions and privacy policy"
+              />
+              {errors.acceptTerms && (
+                <Box 
+                  sx={{ 
+                    color: 'error.main', 
+                    fontSize: '0.75rem', 
+                    mt: 0.5,
+                    fontFamily: 'Roboto, sans-serif',
+                  }}
+                >
+                  {errors.acceptTerms.message}
+                </Box>
+              )}
+            </Box>
+
+            {/* Submit Button */}
+            <Box sx={{ mt: 2 }}>
+              <StyledButton
+                type="submit"
+                disabled={isLoading}
+                customVariant="filled"
+                customSize="medium"
+                fullWidth
+                startIcon={
+                  isLoading ? <CircularProgress size={20} /> : undefined
+                }
+              >
+                {isLoading ? 'Creating account...' : 'Create Account'}
+              </StyledButton>
+            </Box>
+          </Box>
         </Box>
 
-        <Button
-          type="submit"
-          variant="contained"
-          size="large"
-          disabled={isLoading}
-          fullWidth
-          startIcon={isLoading ? <CircularProgress size={20} /> : undefined}
-        >
-          {isLoading ? 'Creating account...' : 'Create account'}
-        </Button>
-      </Box>
-    </Paper>
+        {/* Social Login Section */}
+        <StyledSocialSection>
+          <StyledSocialText>Or sign up with:</StyledSocialText>
+          
+          {/* Desktop: Horizontal layout */}
+          <StyledSocialButtonsDesktop>
+            <StyledSocialButton>Google</StyledSocialButton>
+            <StyledSocialButton>Apple</StyledSocialButton>
+            <StyledSocialButton>Twitter</StyledSocialButton>
+          </StyledSocialButtonsDesktop>
+
+          {/* Mobile: Vertical layout */}
+          <StyledSocialButtonsMobile>
+            <StyledSocialButton isFullWidth>Google</StyledSocialButton>
+            <StyledSocialButton isFullWidth>Apple</StyledSocialButton>
+            <StyledSocialButton isFullWidth>Twitter</StyledSocialButton>
+          </StyledSocialButtonsMobile>
+        </StyledSocialSection>
+
+        {/* Footer */}
+        <StyledFooterSection>
+          <StyledFooterText>
+            Already have an account?{' '}
+            <Link
+              component="button"
+              type="button"
+              onClick={onSwitchToLogin}
+              sx={{
+                fontWeight: 500,
+                textDecoration: 'underline',
+                cursor: 'pointer',
+                '&:hover': {
+                  textDecoration: 'none',
+                },
+              }}
+            >
+              Sign in here
+            </Link>
+          </StyledFooterText>
+        </StyledFooterSection>
+      </StyledRegistrationCard>
+    </StyledRegistrationContainer>
   );
 };

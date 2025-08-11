@@ -4,9 +4,11 @@ import {
   registerUser,
   logoutUser,
   verifyToken,
+  forgotPassword,
   clearError,
   type LoginRequest,
   type RegisterRequest,
+  type ForgotPasswordRequest,
 } from '../slice';
 import {
   selectAuth,
@@ -32,6 +34,10 @@ export const useAuth = () => {
     return dispatch(registerUser(userData));
   };
 
+  const sendPasswordReset = async (data: ForgotPasswordRequest) => {
+    return dispatch(forgotPassword(data));
+  };
+
   const logout = async () => {
     return dispatch(logoutUser());
   };
@@ -55,6 +61,7 @@ export const useAuth = () => {
     // Actions
     login,
     register,
+    sendPasswordReset,
     logout,
     checkAuth,
     resetError,

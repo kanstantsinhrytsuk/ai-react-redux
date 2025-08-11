@@ -33,6 +33,9 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
         fullWidth
         size="medium"
         className={className}
+        InputLabelProps={{
+          shrink: true,
+        }}
         {...props}
       />
     );

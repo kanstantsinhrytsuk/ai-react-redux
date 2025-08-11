@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useNavigate } from 'react-router-dom';
 import { 
   Box, 
   Paper, 
@@ -16,9 +17,14 @@ import { LoginSchema, type LoginRequest } from '../slice';
 import { 
   InputField, 
   Checkbox, 
-  Button, 
-  SocialLogin 
+  Button,
 } from '../../../components/ui';
+import {
+  StyledSocialSection,
+  StyledSocialText,
+  StyledSocialButtonsDesktop,
+  StyledSocialButton,
+} from '../../../components/ui/styled';
 
 interface LoginFormProps {
   onSuccess?: () => void;
@@ -31,6 +37,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
 }) => {
   const { login, isLoading, error } = useAuth();
   const [rememberMe, setRememberMe] = useState(false);
+  const navigate = useNavigate();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   
@@ -51,6 +58,10 @@ export const LoginForm: React.FC<LoginFormProps> = ({
     } catch (err) {
       console.error('Login failed:', err);
     }
+  };
+
+  const handleForgotPassword = () => {
+    navigate('/forgot-password');
   };
 
   const handleSocialLogin = (provider: string) => {
@@ -143,6 +154,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
                   <Link
                     component="button"
                     type="button"
+                    onClick={handleForgotPassword}
                     sx={{
                       fontSize: '14px',
                       fontFamily: 'Roboto, sans-serif',
@@ -179,11 +191,31 @@ export const LoginForm: React.FC<LoginFormProps> = ({
             </Box>
 
             {/* Social Login */}
-            <SocialLogin
-              onGoogleLogin={() => handleSocialLogin('Google')}
-              onAppleLogin={() => handleSocialLogin('Apple')}
-              onTwitterLogin={() => handleSocialLogin('Twitter')}
-            />
+            <StyledSocialSection>
+              <StyledSocialText>Or log in with:</StyledSocialText>
+              
+              {/* Mobile: Vertical layout */}
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                <StyledSocialButton 
+                  isFullWidth 
+                  onClick={() => handleSocialLogin('Google')}
+                >
+                  Google
+                </StyledSocialButton>
+                <StyledSocialButton 
+                  isFullWidth 
+                  onClick={() => handleSocialLogin('Apple')}
+                >
+                  Apple
+                </StyledSocialButton>
+                <StyledSocialButton 
+                  isFullWidth 
+                  onClick={() => handleSocialLogin('Twitter')}
+                >
+                  Twitter
+                </StyledSocialButton>
+              </Box>
+            </StyledSocialSection>
 
             {/* Sign up link */}
             <Box sx={{ borderTop: '1px solid #dde1e6', pt: 2 }}>
@@ -313,6 +345,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
                 <Link
                   component="button"
                   type="button"
+                  onClick={handleForgotPassword}
                   sx={{
                     fontSize: '14px',
                     fontFamily: 'Roboto, sans-serif',
@@ -349,11 +382,22 @@ export const LoginForm: React.FC<LoginFormProps> = ({
           </Box>
 
           {/* Social Login */}
-          <SocialLogin
-            onGoogleLogin={() => handleSocialLogin('Google')}
-            onAppleLogin={() => handleSocialLogin('Apple')}
-            onTwitterLogin={() => handleSocialLogin('Twitter')}
-          />
+          <StyledSocialSection>
+            <StyledSocialText>Or log in with:</StyledSocialText>
+            
+            {/* Desktop: Horizontal layout */}
+            <StyledSocialButtonsDesktop>
+              <StyledSocialButton onClick={() => handleSocialLogin('Google')}>
+                Google
+              </StyledSocialButton>
+              <StyledSocialButton onClick={() => handleSocialLogin('Apple')}>
+                Apple
+              </StyledSocialButton>
+              <StyledSocialButton onClick={() => handleSocialLogin('Twitter')}>
+                Twitter
+              </StyledSocialButton>
+            </StyledSocialButtonsDesktop>
+          </StyledSocialSection>
 
           {/* Sign up link */}
           <Box sx={{ borderTop: '1px solid #dde1e6', pt: 2, width: '100%' }}>

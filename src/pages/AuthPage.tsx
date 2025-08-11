@@ -12,7 +12,7 @@ export const AuthPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen w-full">
+    <>
       {isLogin ? (
         <LoginForm
           onSuccess={handleAuthSuccess}
@@ -24,6 +24,6 @@ export const AuthPage: React.FC = () => {
           onSwitchToLogin={() => setIsLogin(true)}
         />
       )}
-    </div>
+    </>
   );
 };

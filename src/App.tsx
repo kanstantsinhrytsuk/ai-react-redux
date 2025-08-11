@@ -11,6 +11,7 @@ import { CssBaseline } from '@mui/material';
 import { store } from './app/store';
 import { theme } from './lib/theme';
 import { AuthPage } from './pages/AuthPage';
+import { ForgotPasswordPage } from './pages/ForgotPasswordPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { ProtectedRoute } from './components/layout/ProtectedRoute';
 import { PublicRoute } from './components/layout/PublicRoute';
@@ -35,6 +36,14 @@ const App: React.FC = () => {
                   } 
                 />
                 <Route 
+                  path="/forgot-password" 
+                  element={
+                    <PublicRoute>
+                      <ForgotPasswordPage />
+                    </PublicRoute>
+                  } 
+                />
+                <Route 
                   path="/dashboard" 
                   element={
                     <ProtectedRoute>
@@ -44,11 +53,11 @@ const App: React.FC = () => {
                 />
                 <Route 
                   path="/" 
-                  element={<Navigate to="/dashboard" replace />} 
+                  element={<Navigate to="/auth" replace />} 
                 />
                 <Route 
                   path="*" 
-                  element={<Navigate to="/dashboard" replace />} 
+                  element={<Navigate to="/auth" replace />} 
                 />
               </Routes>
             </div>

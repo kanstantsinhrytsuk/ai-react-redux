@@ -7,17 +7,22 @@ export const LoginSchema = z.object({
   password: z.string().min(6, 'Password must be at least 6 characters'),
 });
 
+export const ForgotPasswordSchema = z.object({
+  email: z.string().email('Invalid email address'),
+});
+
 export const RegisterSchema = z.object({
+  firstName: z.string().min(2, 'First name must be at least 2 characters'),
+  lastName: z.string().min(2, 'Last name must be at least 2 characters'),
   email: z.string().email('Invalid email address'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
-  confirmPassword: z.string(),
-  name: z.string().min(2, 'Name must be at least 2 characters'),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ["confirmPassword"],
+  acceptTerms: z.boolean().refine((val) => val === true, {
+    message: 'You must accept the terms and conditions',
+  }),
 });
 
 export type LoginRequest = z.infer<typeof LoginSchema>;
+export type ForgotPasswordRequest = z.infer<typeof ForgotPasswordSchema>;
 export type RegisterRequest = z.infer<typeof RegisterSchema>;
 
 // Types
@@ -90,6 +95,26 @@ export const loginUser = createAsyncThunk(
   }
 );
 
+export const forgotPassword = createAsyncThunk(
+  'auth/forgotPassword',
+  async (data: ForgotPasswordRequest, { rejectWithValue }) => {
+    try {
+      // Mock API call - replace with real API
+      await new Promise((resolve) => {
+        setTimeout(() => {
+          resolve({ message: 'Reset link sent successfully' });
+        }, 1000);
+      });
+      
+      return { 
+        message: 'Password reset link has been sent to your email address.' 
+      };
+    } catch (error) {
+      return rejectWithValue((error as Error).message);
+    }
+  }
+);
+
 export const registerUser = createAsyncThunk(
   'auth/register',
   async (userData: RegisterRequest, { rejectWithValue }) => {
@@ -104,7 +129,7 @@ export const registerUser = createAsyncThunk(
             user: {
               id: Date.now().toString(),
               email: userData.email,
-              name: userData.name,
+              name: `${userData.firstName} ${userData.lastName}`,
               role: 'user',
               createdAt: new Date().toISOString(),
             },
@@ -222,6 +247,19 @@ export const authSlice = createSlice({
         state.isLoading = false;
         state.error = action.payload as string;
         state.isAuthenticated = false;
+      })
+      // Forgot Password
+      .addCase(forgotPassword.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(forgotPassword.fulfilled, (state) => {
+        state.isLoading = false;
+        state.error = null;
+      })
+      .addCase(forgotPassword.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
       })
       // Logout
       .addCase(logoutUser.pending, (state) => {
