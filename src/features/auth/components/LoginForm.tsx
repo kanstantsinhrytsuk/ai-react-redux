@@ -1,18 +1,24 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import {
-  Box,
-  Button,
-  TextField,
-  Typography,
-  Alert,
-  Paper,
+import { 
+  Box, 
+  Paper, 
+  Typography, 
+  Stack,
   Link,
-  CircularProgress,
+  Alert,
+  useTheme,
+  useMediaQuery 
 } from '@mui/material';
 import { useAuth } from '../hooks/useAuth';
 import { LoginSchema, type LoginRequest } from '../slice';
+import { 
+  InputField, 
+  Checkbox, 
+  Button, 
+  SocialLogin 
+} from '../../../components/ui';
 
 interface LoginFormProps {
   onSuccess?: () => void;
@@ -24,6 +30,9 @@ export const LoginForm: React.FC<LoginFormProps> = ({
   onSwitchToRegister,
 }) => {
   const { login, isLoading, error } = useAuth();
+  const [rememberMe, setRememberMe] = useState(false);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   
   const {
     register,
@@ -44,80 +53,334 @@ export const LoginForm: React.FC<LoginFormProps> = ({
     }
   };
 
+  const handleSocialLogin = (provider: string) => {
+    // TODO: Implement social login functionality
+    alert(`Login with ${provider} - not implemented yet`);
+  };
+
+  if (isMobile) {
+    return (
+      <Box
+        sx={{
+          width: '100%',
+          minHeight: '100vh',
+          backgroundColor: '#ffffff',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          p: 2,
+        }}
+      >
+        <Box sx={{ width: '100%', maxWidth: 400 }}>
+          <Stack spacing={4}>
+            {/* Header */}
+            <Box sx={{ textAlign: 'center' }}>
+              <Typography
+                variant="h3"
+                sx={{
+                  fontSize: '32px',
+                  fontFamily: 'Roboto, sans-serif',
+                  fontWeight: 700,
+                  color: '#21272a',
+                  lineHeight: 1.1,
+                  mb: 1,
+                }}
+              >
+                Welcome Back
+              </Typography>
+              <Typography
+                variant="body1"
+                sx={{
+                  fontSize: '16px',
+                  fontFamily: 'Roboto, sans-serif',
+                  fontWeight: 400,
+                  color: '#21272a',
+                  lineHeight: 1.4,
+                }}
+              >
+                Please log in to continue
+              </Typography>
+            </Box>
+
+            {/* Form */}
+            <Box component="form" onSubmit={handleSubmit(onSubmit)}>
+              <Stack spacing={2}>
+                <InputField
+                  {...register('email')}
+                  label="Email Address"
+                  type="email"
+                  placeholder="Enter your email"
+                  error={errors.email?.message}
+                  autoComplete="email"
+                  required
+                />
+
+                <InputField
+                  {...register('password')}
+                  label="Password"
+                  type="password"
+                  placeholder="Enter your password"
+                  error={errors.password?.message}
+                  helperText="It must be a combination of minimum 8 letters, 
+                             numbers, and symbols."
+                  autoComplete="current-password"
+                  required
+                />
+
+                {/* Remember me & Forgot password */}
+                <Box 
+                  sx={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'space-between' 
+                  }}
+                >
+                  <Checkbox
+                    checked={rememberMe}
+                    onChange={(e) => setRememberMe(e.target.checked)}
+                    label="Remember me"
+                  />
+                  <Link
+                    component="button"
+                    type="button"
+                    sx={{
+                      fontSize: '14px',
+                      fontFamily: 'Roboto, sans-serif',
+                      fontWeight: 400,
+                      color: '#001d6c',
+                      lineHeight: 1.4,
+                      textDecoration: 'none',
+                      '&:hover': {
+                        textDecoration: 'underline',
+                      },
+                    }}
+                  >
+                    Forgot Password?
+                  </Link>
+                </Box>
+
+                {error && (
+                  <Alert severity="error">
+                    {error}
+                  </Alert>
+                )}
+
+                <Button
+                  type="submit"
+                  variant="filled"
+                  size="medium"
+                  className="w-full"
+                  isLoading={isLoading}
+                  disabled={isLoading}
+                >
+                  {isLoading ? 'Signing in...' : 'Log In'}
+                </Button>
+              </Stack>
+            </Box>
+
+            {/* Social Login */}
+            <SocialLogin
+              onGoogleLogin={() => handleSocialLogin('Google')}
+              onAppleLogin={() => handleSocialLogin('Apple')}
+              onTwitterLogin={() => handleSocialLogin('Twitter')}
+            />
+
+            {/* Sign up link */}
+            <Box sx={{ borderTop: '1px solid #dde1e6', pt: 2 }}>
+              <Link
+                component="button"
+                type="button"
+                onClick={onSwitchToRegister}
+                sx={{
+                  fontSize: '14px',
+                  fontFamily: 'Roboto, sans-serif',
+                  fontWeight: 400,
+                  color: '#001d6c',
+                  lineHeight: 1.4,
+                  textDecoration: 'none',
+                  display: 'block',
+                  textAlign: 'center',
+                  width: '100%',
+                  '&:hover': {
+                    textDecoration: 'underline',
+                  },
+                }}
+              >
+                No account yet? Sign Up
+              </Link>
+            </Box>
+          </Stack>
+        </Box>
+      </Box>
+    );
+  }
+
   return (
-    <Paper className="w-full max-w-md mx-auto p-8" elevation={0}>
-      <Box component="form" onSubmit={handleSubmit(onSubmit)}>
-        <Box className="text-center mb-6">
-          <Typography variant="h4" component="h2" className="font-bold mb-2">
-            Sign in
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            Or{' '}
+    <Box
+      sx={{
+        width: '100%',
+        minHeight: '100vh',
+        backgroundColor: '#f2f4f8',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        p: { xs: 2, md: 0 },
+      }}
+    >
+      <Paper
+        elevation={0}
+        sx={{
+          backgroundColor: '#ffffff',
+          border: '1px solid #dde1e6',
+          borderRadius: 0,
+          width: 680,
+          p: 10,
+        }}
+      >
+        <Stack spacing={3} alignItems="center">
+          {/* Header */}
+          <Box sx={{ textAlign: 'center', width: '100%' }}>
+            <Typography
+              variant="h2"
+              sx={{
+                fontSize: '42px',
+                fontFamily: 'Roboto, sans-serif',
+                fontWeight: 700,
+                color: '#21272a',
+                lineHeight: 1.1,
+                mb: 1,
+              }}
+            >
+              Welcome Back
+            </Typography>
+            <Typography
+              variant="body1"
+              sx={{
+                fontSize: '18px',
+                fontFamily: 'Roboto, sans-serif',
+                fontWeight: 400,
+                color: '#21272a',
+                lineHeight: 1.4,
+              }}
+            >
+              Please log in to continue
+            </Typography>
+          </Box>
+
+          {/* Form */}
+          <Box 
+            component="form" 
+            onSubmit={handleSubmit(onSubmit)} 
+            sx={{ width: '100%', pt: 3 }}
+          >
+            <Stack spacing={2}>
+              <InputField
+                {...register('email')}
+                label="Email Address"
+                type="email"
+                placeholder="Enter your email"
+                error={errors.email?.message}
+                autoComplete="email"
+                required
+              />
+
+              <InputField
+                {...register('password')}
+                label="Password"
+                type="password"
+                placeholder="Enter your password"
+                error={errors.password?.message}
+                helperText="It must be a combination of minimum 8 letters, 
+                           numbers, and symbols."
+                autoComplete="current-password"
+                required
+              />
+
+              {/* Remember me & Forgot password */}
+              <Box 
+                sx={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'space-between',
+                  width: '100%' 
+                }}
+              >
+                <Checkbox
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                  label="Remember me"
+                />
+                <Link
+                  component="button"
+                  type="button"
+                  sx={{
+                    fontSize: '14px',
+                    fontFamily: 'Roboto, sans-serif',
+                    fontWeight: 400,
+                    color: '#001d6c',
+                    lineHeight: 1.4,
+                    textDecoration: 'none',
+                    '&:hover': {
+                      textDecoration: 'underline',
+                    },
+                  }}
+                >
+                  Forgot Password?
+                </Link>
+              </Box>
+
+              {error && (
+                <Alert severity="error">
+                  {error}
+                </Alert>
+              )}
+
+              <Button
+                type="submit"
+                variant="filled"
+                size="medium"
+                className="w-full"
+                isLoading={isLoading}
+                disabled={isLoading}
+              >
+                {isLoading ? 'Signing in...' : 'Log In'}
+              </Button>
+            </Stack>
+          </Box>
+
+          {/* Social Login */}
+          <SocialLogin
+            onGoogleLogin={() => handleSocialLogin('Google')}
+            onAppleLogin={() => handleSocialLogin('Apple')}
+            onTwitterLogin={() => handleSocialLogin('Twitter')}
+          />
+
+          {/* Sign up link */}
+          <Box sx={{ borderTop: '1px solid #dde1e6', pt: 2, width: '100%' }}>
             <Link
               component="button"
               type="button"
               onClick={onSwitchToRegister}
-              className="font-medium"
+              sx={{
+                fontSize: '14px',
+                fontFamily: 'Roboto, sans-serif',
+                fontWeight: 400,
+                color: '#001d6c',
+                lineHeight: 1.4,
+                textDecoration: 'none',
+                display: 'block',
+                textAlign: 'center',
+                width: '100%',
+                '&:hover': {
+                  textDecoration: 'underline',
+                },
+              }}
             >
-              create a new account
+              No account yet? Sign Up
             </Link>
-          </Typography>
-        </Box>
-
-        {error && (
-          <Alert severity="error" className="mb-6">
-            {error}
-          </Alert>
-        )}
-
-        <Box className="space-y-4 mb-6">
-          <TextField
-            {...register('email')}
-            id="email"
-            type="email"
-            label="Email address"
-            autoComplete="email"
-            placeholder="Enter your email"
-            error={!!errors.email}
-            helperText={errors.email?.message}
-            required
-            fullWidth
-            variant="outlined"
-          />
-
-          <TextField
-            {...register('password')}
-            id="password"
-            type="password"
-            label="Password"
-            autoComplete="current-password"
-            placeholder="Enter your password"
-            error={!!errors.password}
-            helperText={errors.password?.message}
-            required
-            fullWidth
-            variant="outlined"
-          />
-        </Box>
-
-        <Button
-          type="submit"
-          variant="contained"
-          size="large"
-          disabled={isLoading}
-          fullWidth
-          className="mb-4"
-          startIcon={isLoading ? <CircularProgress size={20} /> : undefined}
-        >
-          {isLoading ? 'Signing in...' : 'Sign in'}
-        </Button>
-
-        <Box className="text-center">
-          <Typography variant="body2" color="text.secondary">
-            Demo: admin@example.com / password
-          </Typography>
-        </Box>
-      </Box>
-    </Paper>
+          </Box>
+        </Stack>
+      </Paper>
+    </Box>
   );
 };
