@@ -2,6 +2,12 @@
 
 A modern, production-ready React application built with Redux Toolkit for state management, following best practices for scalable SaaS applications.
 
+## 🌐 Live Demo
+
+[![Deploy to GitHub Pages](https://github.com/kanstantsinhrytsuk/ai-react-redux/actions/workflows/deploy-github-pages.yml/badge.svg)](https://github.com/kanstantsinhrytsuk/ai-react-redux/actions/workflows/deploy-github-pages.yml)
+
+**🔗 [View Live Demo](https://kanstantsinhrytsuk.github.io/ai-react-redux/)**
+
 ## 🚀 Features
 
 - **Modern React 18** with TypeScript
@@ -14,6 +20,7 @@ A modern, production-ready React application built with Redux Toolkit for state 
 - **Testing Setup** with Vitest and React Testing Library
 - **ESLint & TypeScript** for code quality
 - **Feature-based Architecture** for scalability
+- **GitHub Pages Deployment** with automated CI/CD
 
 ## 📁 Project Structure
 
@@ -78,7 +85,7 @@ src/
 ### Prerequisites
 
 - Node.js 18+ 
-- Yarn or npm
+- Yarn (recommended) or npm
 
 ### Installation
 
@@ -194,19 +201,47 @@ Configured with:
 
 ## 🚀 Deployment
 
+### GitHub Pages (Automated)
+
+This project automatically deploys to GitHub Pages on every push to the `main` branch.
+
+**Live Demo:** [https://kanstantsinhrytsuk.github.io/ai-react-redux/](https://kanstantsinhrytsuk.github.io/ai-react-redux/)
+
+The deployment process includes:
+- **Automated builds** on push to main
+- **Quality checks** (TypeScript, ESLint, tests)
+- **Optimized production builds** with code splitting
+- **Secure deployment** with minimal permissions
+
+#### Manual Deployment
+
+To manually trigger a deployment:
+1. Go to the "Actions" tab in your GitHub repository
+2. Select "Deploy to GitHub Pages" workflow
+3. Click "Run workflow"
+
 ### Build for Production
+
 ```bash
 yarn build
 ```
 
-The build artifacts will be stored in the `dist/` directory.
+The build artifacts will be stored in the `dist/` directory with:
+- **Code splitting** for optimal loading
+- **Minified assets** for faster downloads
+- **Source maps** disabled for production
+- **Optimized chunks** (vendor, redux, router, ui)
 
-### Deploy to Vercel
+### Alternative Deployment Options
+
+#### Deploy to Vercel
+
 1. Connect your repository to Vercel
 2. Configure environment variables
 3. Deploy automatically on push to main
 
-### Deploy to Netlify
+#### Deploy to Netlify
+
 1. Build the project: `yarn build`
 2. Upload the `dist/` folder to Netlify
 3. Configure redirects for SPA routing
