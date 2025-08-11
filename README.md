@@ -84,7 +84,7 @@ src/
 
 ### Prerequisites
 
-- Node.js 18+ 
+- Node.js 20+ (required for react-router-dom@7.8.0)
 - Yarn (recommended) or npm
 
 ### Installation
